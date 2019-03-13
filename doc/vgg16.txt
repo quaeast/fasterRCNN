@@ -1,0 +1,45 @@
+filter_height filter_width in_channel out_channel
+NHWC
+max_pool   window: 1,2,2,1         step: 1,2,2,1       4 in 1
+
+bias size of convolution and full_connect layer: its output
+
+
+https://www.jianshu.com/p/fcb2ff59f7e6
+
+img                             Bx224x224x3
+
+conv1_1         3,3,3,64        bx224x224x64
+conv1_2         3,3,64,64       bx224x224x64
+
+    max_pool1                   bx112x112x64
+
+conv2_1         3,3,64,128      bx112x112x128
+conv2_2         3,3,128,128     bx112x112x128
+
+    max_pool2                   bx32x56x56x128
+
+conv3_1         3,3,128,256     bx56x56x256
+conv3_2         3,3,256,256     bx56x56x256
+conv3_3         3,3,256,256     bx56x56x256
+
+    max_pool3                   bx28x28x256
+
+conv4_1         3,3,256,512     bx28x28x512
+conv4_2         3,3,512,512     bx28x28x512
+conv4_3         3,3,512,512     bx28x28x512
+
+    max_pool4                   bx14x14x512
+
+conv5_1         3,3,512,512     bx14x14x512
+conv5_2         3,3,512,512     bx14x14x512
+conv5_3         3,3,512,512     bx14x14x512
+
+    max_pool5                   bx7x7x512
+
+fc6             25088,4096      bx4096
+fc7             4096,4096       bx4096
+fc8             4096,1000       bx1000
+
+conv*_*[0] is filter
+conv*_*[1] is bias
