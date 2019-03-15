@@ -7,7 +7,8 @@ class Vgg16(object):
     def __init__(self, vgg_npy_path):
         self.model = np.load(file=vgg_npy_path, encoding='latin1').item()
         print('vgg16.npy loaded')
-        img = tf.placeholder(dtype=[None, 224, 224, 3])
+
+        self.img = tf.placeholder(shape=[None, 224, 224, 3], dtype=tf.float32)
 
         self.conv1_1 = self.conv2D(self.img, 'conv1_1')
         self.conv1_2 = self.conv2D(self.conv1_1, 'conv1_2')
@@ -17,20 +18,22 @@ class Vgg16(object):
         self.conv2_2 = self.conv2D(self.conv2_1, 'conv2_2')
         self.max_pool2 = self.max_pool(self.conv2_2, 'max_pool2')
 
-        self.conv3_1 = self.conv2d(self.pool2, 'conv3_1')
-        self.conv3_2 = self.conv2d(self.conv3_1, 'conv3_2')
-        self.conv3_3 = self.conv2d(self.conv3_2, 'conv3_3')
+        self.conv3_1 = self.conv2D(self.max_pool2, 'conv3_1')
+        self.conv3_2 = self.conv2D(self.conv3_1, 'conv3_2')
+        self.conv3_3 = self.conv2D(self.conv3_2, 'conv3_3')
         self.max_pool3 = self.max_pool(self.conv3_3, 'pool3')
 
-        self.conv4_1 = self.conv2d(self.max_pool3, 'conv4_1')
-        self.conv4_2 = self.conv2d(self.conv4_1, 'conv4_2')
-        self.conv4_3 = self.conv2d(self.conv4_2, 'conv4_3')
+        self.conv4_1 = self.conv2D(self.max_pool3, 'conv4_1')
+        self.conv4_2 = self.conv2D(self.conv4_1, 'conv4_2')
+        self.conv4_3 = self.conv2D(self.conv4_2, 'conv4_3')
         self.max_pool4 = self.max_pool(self.conv4_3, 'pool4')
 
-        self.conv5_1 = self.conv2d(self.max_pool4, 'conv5_1')
-        self.conv5_2 = self.conv2d(self.conv5_1, 'conv5_2')
-        self.conv5_3 = self.conv2d(self.conv5_2, 'conv5_3')
+        self.conv5_1 = self.conv2D(self.max_pool4, 'conv5_1')
+        self.conv5_2 = self.conv2D(self.conv5_1, 'conv5_2')
+        self.conv5_3 = self.conv2D(self.conv5_2, 'conv5_3')
         self.max_pool5 = self.max_pool(self.conv5_3, 'max_pool5')
+
+        self.max_pool5 = tf.reshape(self.max_pool5, [-1, 25088])
 
         self.fc6 = self.full_connect(self.max_pool5, 'fc6')
 
@@ -77,3 +80,16 @@ class Vgg16(object):
     def get_softmax(self):
         return self.softmax
 
+if __name__ == '__main__':
+    with tf.Session() as sess:
+        vgg = Vgg16('../vgg_data/vgg16.npy')
+        sess.run(tf.global_variables_initializer())
+        print('initialized')
+        print(sess.run(fetches=vgg.get_softmax(), feed_dict={vgg.img: np.ones(dtype=np.float32, shape=[1, 224, 224, 3])}))
+        print(
+            sess.run(fetches=vgg.get_softmax(), feed_dict={vgg.img: np.zeros(dtype=np.float32, shape=[1, 224, 224, 3])}))
+
+'''
+CPU times: user 19.2 s, sys: 15.9 s, total: 35.1 s
+Wall time: 38.3 s
+'''
