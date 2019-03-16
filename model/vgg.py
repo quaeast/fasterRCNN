@@ -80,14 +80,14 @@ class Vgg16(object):
     def get_softmax(self):
         return self.softmax
 
+
 if __name__ == '__main__':
     with tf.Session() as sess:
         vgg = Vgg16('../vgg_data/vgg16.npy')
         sess.run(tf.global_variables_initializer())
         print('initialized')
         print(sess.run(fetches=vgg.get_softmax(), feed_dict={vgg.img: np.ones(dtype=np.float32, shape=[1, 224, 224, 3])}))
-        print(
-            sess.run(fetches=vgg.get_softmax(), feed_dict={vgg.img: np.zeros(dtype=np.float32, shape=[1, 224, 224, 3])}))
+
 
 '''
 CPU times: user 19.2 s, sys: 15.9 s, total: 35.1 s
