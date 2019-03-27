@@ -8,7 +8,7 @@ class Vgg16(object):
         self.model = np.load(file=vgg_npy_path, encoding='latin1').item()
         print('vgg16.npy loaded')
 
-        self.img = tf.placeholder(shape=[None, 224, 224, 3], dtype=tf.float32)
+        self.img = tf.placeholder(shape=[None, 600, 1000, 3], dtype=tf.float32)
 
         self.conv1_1 = self.conv2D(self.img, 'conv1_1')
         self.conv1_2 = self.conv2D(self.conv1_1, 'conv1_2')
@@ -31,17 +31,20 @@ class Vgg16(object):
         self.conv5_1 = self.conv2D(self.max_pool4, 'conv5_1')
         self.conv5_2 = self.conv2D(self.conv5_1, 'conv5_2')
         self.conv5_3 = self.conv2D(self.conv5_2, 'conv5_3')
-        self.max_pool5 = self.max_pool(self.conv5_3, 'max_pool5')
 
-        self.max_pool5 = tf.reshape(self.max_pool5, [-1, 25088])
+        # self.conv5_4.shape=(?, 38, 63, 512)
 
-        self.fc6 = self.full_connect(self.max_pool5, 'fc6')
-
-        self.fc7 = self.full_connect(self.fc6, 'fc7')
-
-        self.fc8 = self.full_connect(self.fc7, 'fc8')
-
-        self.softmax = tf.nn.softmax(self.fc8)
+        # self.max_pool5 = self.max_pool(self.conv5_3, 'max_pool5')
+        #
+        # self.max_pool5 = tf.reshape(self.max_pool5, [-1, 25088])
+        #
+        # self.fc6 = self.full_connect(self.max_pool5, 'fc6')
+        #
+        # self.fc7 = self.full_connect(self.fc6, 'fc7')
+        #
+        # self.fc8 = self.full_connect(self.fc7, 'fc8')
+        #
+        # self.softmax = tf.nn.softmax(self.fc8)
 
 
     def get_filter(self, name):
@@ -74,11 +77,11 @@ class Vgg16(object):
             bias = self.get_bias(name)
             return tf.nn.relu_layer(x=input_x, weights=weight, biases=bias)
 
-    def get_conv_result(self):
+    def get_feature_map(self):
         return self.conv5_3
 
-    def get_softmax(self):
-        return self.softmax
+    # def get_softmax(self):
+    #     return self.softmax
 
 
 if __name__ == '__main__':
@@ -86,7 +89,7 @@ if __name__ == '__main__':
         vgg = Vgg16('../vgg_data/vgg16.npy')
         sess.run(tf.global_variables_initializer())
         print('initialized')
-        print(sess.run(fetches=vgg.get_softmax(), feed_dict={vgg.img: np.ones(dtype=np.float32, shape=[1, 224, 224, 3])}))
+        print(sess.run(fetches=vgg.get_feature_map(), feed_dict={vgg.img: np.ones(dtype=np.float32, shape=[1, 600, 1000, 3])}))
 
 
 '''
