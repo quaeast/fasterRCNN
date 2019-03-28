@@ -37,13 +37,25 @@ def generate_anchor(rpn_reg):
     return rpn_reg_anchor
 
 
-def nmp(rpn_reg_anchor, rpn_reg_scores):
+# mode:
+#   train ->'t' output shape 12000 2000
+#   inference -> 'r' output shape 6000 300
+#
+
+def nmp(rpn_reg_anchor, rpn_reg_scores, mode='t'):
+    if mode == 't':
+        top_n = 12000
+        max_output = 2000
+    else:
+        top_n = 6000
+        max_output = 300
     with tf.name_scope('nmp'):
         rpn_reg_anchor_2d = tf.reshape(rpn_reg_anchor, shape=[-1, 4])
         rpn_reg_scores_1d = tf.reshape(rpn_reg_scores, shape=[-1])
-        suppressed_anchors = tf.image.non_max_suppression(boxes=rpn_reg_anchor_2d,
+        suppressed_anchors_index = tf.image.non_max_suppression(boxes=rpn_reg_anchor_2d,
                                                           scores=rpn_reg_scores_1d,
-                                                          max_output_size=2000)
+                                                          max_output_size=max_output)
+        suppressed_anchors = tf.gather(params=rpn_reg_anchor_2d, indices=suppressed_anchors_index)
         return suppressed_anchors
 
 

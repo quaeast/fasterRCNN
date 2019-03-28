@@ -7,27 +7,28 @@ class RPN(object):
 
     def __init__(self, feature_map):
         anchor_num = 9
+        with tf.variable_scope('rpn_head'):
 
-        self.conv3m3 = tf.layers.conv2d(inputs=feature_map,
-                                        filters=512,
-                                        kernel_size=[3, 3],
-                                        padding='same',
-                                        kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.1),
-                                        name='rpn_conv_3m3')
+            self.conv3m3 = tf.layers.conv2d(inputs=feature_map,
+                                            filters=512,
+                                            kernel_size=[3, 3],
+                                            padding='same',
+                                            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.1),
+                                            name='rpn_conv_3m3')
 
-        self.rpn_cls = tf.layers.conv2d(inputs=self.conv3m3,
-                                        filters=anchor_num,
-                                        kernel_size=[1, 1],
-                                        padding='same',
-                                        kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.1),
-                                        name='rpn_cls')
+            self.rpn_cls = tf.layers.conv2d(inputs=self.conv3m3,
+                                            filters=anchor_num,
+                                            kernel_size=[1, 1],
+                                            padding='same',
+                                            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.1),
+                                            name='rpn_cls')
 
-        self.rpn_reg = tf.layers.conv2d(inputs=self.conv3m3,
-                                        filters=anchor_num*4,
-                                        kernel_size=[1, 1],
-                                        padding='same',
-                                        kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.1),
-                                        name='rpn_reg')
+            self.rpn_reg = tf.layers.conv2d(inputs=self.conv3m3,
+                                            filters=anchor_num * 4,
+                                            kernel_size=[1, 1],
+                                            padding='same',
+                                            kernel_initializer=tf.random_normal_initializer(mean=0, stddev=0.1),
+                                            name='rpn_reg')
 
     def pred(self):
         return self.conv3m3, self.rpn_cls, self.rpn_reg
