@@ -25,7 +25,6 @@ divisor[1::2] = 1000
 # y1, x1, y2, x2
 
 
-
 def generate_anchor(rpn_reg):
     with tf.variable_scope('generate_anchor'):
         anchor_map_1d_tfc = tf.constant(value=anchor_map_1d, dtype=tf.float32)

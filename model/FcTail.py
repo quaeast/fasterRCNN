@@ -27,5 +27,8 @@ class FcTail(object):
         return self.bbox, self.softmax_output
 
 
-if __name__ =='__main__':
-    # fack_input = tf.constant(value=)
+if __name__ == '__main__':
+    fake_input = tf.random_normal(shape=[100, 7, 7, 512])
+    fc_instant = FcTail(fake_input)
+    a = fc_instant.inference()
+    print(a)
