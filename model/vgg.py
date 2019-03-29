@@ -46,7 +46,6 @@ class Vgg16(object):
         #
         # self.softmax = tf.nn.softmax(self.fc8)
 
-
     def get_filter(self, name):
         con_filter = self.model[name][0]
         return tf.get_variable(name='filter', initializer=con_filter)

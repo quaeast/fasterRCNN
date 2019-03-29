@@ -41,7 +41,7 @@ def generate_anchor(rpn_reg):
 #   inference -> 'r' output shape 6000 300
 #
 
-def nmp(rpn_reg_anchor, rpn_reg_scores, mode='t'):
+def nms(rpn_reg_anchor, rpn_reg_scores, mode='t'):
     if mode == 't':
         top_n = 12000
         max_output = 2000
@@ -55,13 +55,13 @@ def nmp(rpn_reg_anchor, rpn_reg_scores, mode='t'):
                                                           scores=rpn_reg_scores_1d,
                                                           max_output_size=max_output)
         suppressed_anchors = tf.gather(params=rpn_reg_anchor_2d, indices=suppressed_anchors_index)
-        return suppressed_anchors
+    return suppressed_anchors
 
 
 if __name__ == '__main__':
     fake_anchors = tf.random_normal(dtype=tf.float32, shape=[1, 38, 63, 36])
     fake_scores = tf.random_normal(dtype=tf.float32, shape=[1, 38, 63, 9])
-    sa = nmp(generate_anchor(fake_anchors), fake_scores)
+    sa = nms(generate_anchor(fake_anchors), fake_scores)
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         na = sess.run(sa)

@@ -31,7 +31,7 @@ class RPN(object):
                                             name='rpn_reg')
 
     def pred(self):
-        return self.conv3m3, self.rpn_cls, self.rpn_reg
+        return self.rpn_cls, self.rpn_reg
 
 
 if __name__ == '__main__':

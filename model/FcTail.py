@@ -18,7 +18,7 @@ class FcTail(object):
 
             self.softmax_input = tf.contrib.layers.fully_connected(
                 inputs=self.roi_features_1d,
-                num_outputs=20
+                num_outputs=21
             )
 
             self.softmax_output = tf.nn.softmax(self.softmax_input)
